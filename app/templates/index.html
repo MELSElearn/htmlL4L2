@@ -1,65 +1,236 @@
-<!DOCTYPE html>
+<!doctype HTML>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>360&deg; Image Gallery</title>
-    <meta name="description" content="360&deg; Image Gallery - A-Frame">
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-event-set-component@5/dist/aframe-event-set-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-template-component@3.2.1/dist/aframe-template-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">  
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+<script src="https://unpkg.com/aframe-event-set-component@5/dist/aframe-event-set-component.min.js"></script>
+<script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
+<script src="https://unpkg.com/aframe-template-component@3.2.1/dist/aframe-template-component.min.js"></script>
+<script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar.js"></script>
+<script>
+    var correct1 = "";
+    var correct2 = "";
+    var correct3 = "";
+    var po_x = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+</script>
+<script>
+  let context;
+  AFRAME.registerComponent('markerhandler', {
+    init: function () {
+      this.el.addEventListener('markerFound', () => {
+        var markerId = this.el.id;
+        marker1Pos = new THREE.Vector3();
+        if (markerId=="marker1")
+        {
+            po_x[0] = this.el.object3D.getWorldPosition(marker1Pos).x;
+        }
+        if (markerId=="marker2")
+        {
+          po_x[1] = this.el.object3D.getWorldPosition(marker1Pos).x;
+        }
+        if (markerId=="marker3")
+        {
+            po_x[2] = this.el.object3D.getWorldPosition(marker1Pos).x;
+        }
+        if (markerId=="marker7")
+        {
+          po_x[6] = this.el.object3D.getWorldPosition(marker1Pos).x;
+        }
+        if (markerId=="marker16")
+        {
+          po_x[15] = this.el.object3D.getWorldPosition(marker1Pos).x;
+        }
+        if (markerId=="marker20")
+        {
+          po_x[19] = this.el.object3D.getWorldPosition(marker1Pos).x;
+        }
+        checkanswer(po_x[parseInt(correct1)],po_x[parseInt(correct2)],po_x[parseInt(correct3)]);   
+      })
+
+      this.el.addEventListener('markerLost', () => {
+        var markerId = this.el.id;
+        marker1Pos = new THREE.Vector3();
+        if (markerId=="marker1")
+        {
+            po_x[0] = 0;
+        }
+        if (markerId=="marker2")
+        {
+          po_x[1] = 0;
+        }
+        if (markerId=="marker3")
+        {
+            po_x[2] = 0;
+        }
+        if (markerId=="marker7")
+        {
+          po_x[6] = 0;
+        }
+        if (markerId=="marker16")
+        {
+          po_x[15] = 0;
+        }
+        if (markerId=="marker20")
+        {
+          po_x[19] = 0;
+        }
+        checkanswer(po_x[parseInt(correct1)],po_x[parseInt(correct2)],po_x[parseInt(correct3)]);
+
+      })
+    }
+  });
+</script>
+<script>
+    window.onload = function () {
+        document.getElementById("button1").addEventListener("click", function () {
+            var entity = document.getElementById("sound_q1");
+            entity.components.sound.playSound();
+            correct1 = "2";
+            correct2 = "0";
+            correct3 = "19";
+            document.getElementById("table1").style.visibility ="hidden";
+
+        });
+    };
+    function checkanswer(a,b,c)
+    {
+      var status = 0;
+
+      for (let i = 0; i < po_x.length; i++) {
+        if (i == parseInt(correct1) || i == parseInt(correct2) || i == parseInt(correct3) )
+        {
+        }else
+        {
+          if (po_x[i]!=0)
+          {
+            //got error input
+            status =1;
+            document.getElementById("table1").style.visibility ="hidden";
+          }
+        }
+      }
+      if (status==0)
+      {
+        if (a !=0 && b !=0 && c!=0)
+        {
+          if (a<b && b<c)
+          {
+            //correct
+            document.getElementById("table1").style.visibility ="visible";
+          }else{
+            document.getElementById("table1").style.visibility ="hidden";
+          }
+        }else{
+          document.getElementById("table1").style.visibility ="hidden";
+        }
+      }
+    }
+</script>
+<style>
+    .buttons {
+      position: absolute;
+      bottom: 50px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      visibility:visible;
+    }
+    .tables {
+    position: absolute;
+    bottom: 100px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    visibility:hidden;
+  }
+  </style>
+<body style="margin: 0px; overflow: hidden;">
+  <div class="tables" id="table1">
+    <table border="1" width="40%" style="background-color: aqua;">
+        <tr><td align="center">
+            <font size="+3">Yes, you are correct.</font>
+        </td></tr>
+    </table>
+</div>
+  <div class="buttons" id="mybuttons">
+        <button  id="button1">Question</button>&nbsp;
+  </div> 
+  <a-scene
+  vr-mode-ui="enabled: false;"
+  renderer="logarithmicDepthBuffer: true;"
+  embedded
+  arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;">
+
+    <a-assets>
+      <img id="s_a" src="static/pic_letter/s_a.png" />
+      <img id="s_b" src="static/pic_letter/s_b.png" />
+      <img id="s_c" src="static/pic_letter/s_c.png" />
+      <img id="s_g" src="static/pic_letter/s_g.png" />
+      <img id="s_p" src="static/pic_letter/s_p.png" />
+      <img id="s_t" src="static/pic_letter/s_t.png" />
+      <audio id="question1" src="static/question/c_a_t.mp3" preload="auto" crossorigin="anonymous" poolSize="26"></audio>
+    </a-assets>
+
+    <a-entity sound="src: #question1" id="sound_q1"></a-entity>
     
-    <!-- Image link template to be reused. -->
-    <script id="link" type="text/html">
-      <a-entity class="link"
-        geometry="primitive: plane; height: 1; width: 1"
-        material="shader: flat; src: ${thumb}"
-        event-set__mouseenter="scale: 1.2 1.2 1; _target: #desc; _delay: 300; material.src: ${src}"
-        event-set__mouseleave="scale: 1 1 1; _target: #desc; _delay: 300; material.src: #none"
-        event-set__click="_target: #desc; _delay: 300; material.src: ${src}"
-        proxy-event="event: click; to: #desc; as: fade"></a-entity>
-    </script>
+    <a-marker id="marker1" markerhandler type="pattern" url="static/pattern/pattern-small_a.patt" smooth="true"
+    smoothCount="10"
+    smoothTolerance=".10"
+    smoothThreshold="5"
+    minConfidence = "0.99">
+      <a-image  id="desc" src="#s_a" rotation="90 0 0" position="0 0 -1.5"></a-image>
+   </a-marker>
 
-    <!-- desc -->
-    <script id="desc" type="text/html">
-      <a-entity class="desc"
-        geometry="primitive: plane; height: 1; width: 2"></a-entity>
-    </script>
-  </head>
-  <body>
-    <a-scene>
-      <a-assets>
-        <img id="city" src="static/hongkong_small.jpg">
-        <img id="none" src="static/none.png">
-        <img id="city-desc" src="static/hongkong_desc.jpg">
-        <img id="city-thumb" src="static/thumb-city.jpg">
+   <a-marker id="marker2" markerhandler type="pattern" url="static/pattern/pattern-small_b.patt" smooth="true"
+   smoothCount="10"
+   smoothTolerance=".10"
+   smoothThreshold="5"
+   minConfidence = "0.99">
+    <a-image  id="desc" src="#s_b" rotation="-90 0 0" position="0 0 -1.5"></a-image>
+   </a-marker>
 
-      </a-assets>
+   <a-marker id="marker3" markerhandler type="pattern" url="static/pattern/pattern-small_c.patt" smooth="true"
+   smoothCount="10"
+   smoothTolerance=".10"
+   smoothThreshold="5"
+   minConfidence = "0.99">
+    <a-image  id="desc" src="#s_c" rotation="-90 0 0" position="0 0 -1.5"></a-image>
+   </a-marker>
 
-      <!-- 360-degree image. -->
-      <a-sky id="image-360" radius="10" src="#city"></a-sky>
+   <a-marker id="marker7" markerhandler type="pattern" url="static/pattern/pattern-small_g.patt" smooth="true"
+   smoothCount="10"
+   smoothTolerance=".10"
+   smoothThreshold="5"
+   minConfidence = ".99">
+    <a-image  id="desc" src="#s_g" rotation="-90 0 0" position="0 0 -1.5"></a-image>
+   </a-marker>
 
-      <!-- Image links. -->
-      <a-entity id="links" layout="type: line; margin: 1.5" position="0 0 -4" rotation="0 0 0">
-        <a-entity template="src: #link" data-src="#city-desc" data-thumb="#city-thumb"></a-entity>
-      </a-entity>
+   <a-marker id="marker16" markerhandler type="pattern" url="static/pattern/pattern-small_p.patt" smooth="true"
+   smoothCount="10"
+   smoothTolerance=".10"
+   smoothThreshold="5"
+   minConfidence = "0.99">
+    <a-image  id="desc" src="#s_p" rotation="-90 0 0" position="0 0 -1.5"></a-image>
+   </a-marker>
 
-      <!-- Image links. -->
-      <a-entity id="descs" layout="type: line; margin: 1.5" position="0 -1.5 -4" rotation="0 0 0">
-        <a-image  id="desc" src="#none" width="2"></a-image>
-      </a-entity>
+   <a-marker id="marker20" markerhandler type="pattern" url="static/pattern/pattern-small_t.patt" smooth="true"
+   smoothCount="10"
+   smoothTolerance=".10"
+   smoothThreshold="5"
+   minConfidence = "0.99">
+    <a-image  id="desc" src="#s_t" rotation="-90 0 0" position="0 0 -1.5"></a-image>
+   </a-marker>
 
-      <!-- Camera + cursor. -->
-      <a-entity camera look-controls>
-        <a-cursor
-          id="cursor"
-          animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
-          animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
-          event-set__mouseenter="_event: mouseenter; color: springgreen"
-          event-set__mouseleave="_event: mouseleave; color: black"
-          raycaster="objects: .link"></a-cursor>
-      </a-entity>
-    </a-scene>
-  </body>
+  <a-entity camera></a-entity>
+    
+</a-scene>
+</body>
 </html>
